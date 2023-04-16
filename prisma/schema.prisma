@@ -9,3 +9,31 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  posts Post[]
+  createdAt DateTime @default(now())
+  tokens Token[]
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  content   String
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int     
+  userId    String?
+  createdAt DateTime @default(now())
+  likes     Int     @default(0)
+}
+
+model Token{
+  id        Int     @id @default(autoincrement())
+  payload   String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime @default(now())
+}
